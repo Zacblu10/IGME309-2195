@@ -137,6 +137,13 @@ public:
 	OUTPUT: ---
 	*/
 	void AddQuad(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3 a_vTopLeft, vector3 a_vTopRight);
+
+	/*
+	USAGE: Get a point on the circle in the x-z plane
+	ARGUMENTS: Angle at which the point will be created, radius to that point, and the y position from the orgin to set it to
+	OUTPUT: Vector 3 coords for the point
+	*/
+	vector3 MyMesh::GetPoint(float angle, float radius, float  yPos);
 #pragma region 3D Primitives
 	/*
 	USAGE: Generates a cube

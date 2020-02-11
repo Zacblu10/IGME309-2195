@@ -173,6 +173,13 @@ void MyMesh::AddQuad(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3 a_vT
 	AddVertexPosition(a_vBottomRight);
 	AddVertexPosition(a_vTopRight);
 }
+vector3 MyMesh::GetPoint(float angle, float radius, float yPos) {
+	float radians = (angle * PI) / 180;
+	float z = radius * sin(radians);
+	float x = radius * cos(radians);
+
+	return vector3(x, yPos, z);
+}
 void MyMesh::GenerateCube(float a_fSize, vector3 a_v3Color)
 {
 	if (a_fSize < 0.01f)
@@ -275,9 +282,30 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	//get the angle that each triangle will occupy
+	float angle = 0;
+	float increment = 360 / a_nSubdivisions;
+	vector3 heightPoint(0.0f, a_fHeight / 2, 0.0f); 
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 botRight = GetPoint(angle, a_fRadius, -a_fHeight/2); 
+
+		angle += increment;
+		//ensure the circle is closed on the last subdivison
+		if (i == a_nSubdivisions - 1)
+		{
+			angle = 360;
+		}
+
+		vector3 botLeft = GetPoint(angle, a_fRadius, -a_fHeight / 2);
+		
+		//draw circle
+		AddTri(botRight, botLeft, vector3(0, -a_fHeight / 2, 0));
+		//draw tri to peak
+		AddTri(botLeft, botRight, heightPoint);
+
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -300,8 +328,43 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+
+	//get the angle that each triangle will occupy
+	float angle = 0;
+	float increment = 360 / a_nSubdivisions;
+	vector3 heightPoint(0.0f, a_fHeight / 2, 0.0f);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{		
+		//right points
+		vector3 botRight1 = GetPoint(angle, a_fRadius, a_fHeight / 2); //top circle
+		vector3 botRight2 = GetPoint(angle, a_fRadius, -a_fHeight / 2); //bottom circle
+
+		angle += increment;
+		
+		//ensure the circle is closed on the last subdivison
+		if (i == a_nSubdivisions - 1)
+		{
+			angle = 360; 
+		}
+
+		//left points
+		vector3 botLeft1 = GetPoint(angle, a_fRadius, a_fHeight / 2);  //top circle
+		vector3 botLeft2 = GetPoint(angle, a_fRadius, -a_fHeight / 2); //bottom circle
+
+		//draw top circle
+		AddTri(botLeft1, botRight1, vector3(0, a_fHeight / 2, 0));
+
+		//draw bottom circle
+		AddTri(botRight2, botLeft2, vector3(0, -a_fHeight / 2, 0));
+
+		//connect them
+		AddQuad(botLeft2, botRight2, botLeft1, botRight1);
+
+//		angle += increment;
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
