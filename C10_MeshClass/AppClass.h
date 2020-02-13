@@ -14,6 +14,9 @@ Date: 2017/05
 
 class Application
 {
+	vector3 v3Rotation;
+
+
 	MyMesh* m_pMesh = nullptr;
 	MyMesh* m_pMesh1 = nullptr;
 
