@@ -144,6 +144,13 @@ public:
 	OUTPUT: Vector 3 coords for the point
 	*/
 	vector3 MyMesh::GetPoint(float angle, float radius, float  yPos);
+
+	/*
+	USAGE: Get a point on the circle in any plan 
+	ARGUMENTS: laitude and longitude of the point. radius of the sphere
+	OUTPUT: Vector 3 coords for the point
+	*/
+	vector3 MyMesh::GetPoint3D(float lon, float lat, float radius);
 #pragma region 3D Primitives
 	/*
 	USAGE: Generates a cube

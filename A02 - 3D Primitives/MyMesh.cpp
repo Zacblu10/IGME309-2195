@@ -180,6 +180,15 @@ vector3 MyMesh::GetPoint(float angle, float radius, float yPos) {
 
 	return vector3(x, yPos, z);
 }
+vector3 MyMesh::GetPoint3D(float lon, float lat, float radius) {
+	float radiansLon = (lon * PI) / 180;
+	float radiansLat = (lat * PI) / 180;
+	float x = cos(radiansLon) * sin(radiansLat) * radius;
+	float y = sin(radiansLon) * sin(radiansLat) * radius;
+	float z = cos(radiansLat) * radius;
+
+	return vector3(x, y, z); 
+}
 void MyMesh::GenerateCube(float a_fSize, vector3 a_v3Color)
 {
 	if (a_fSize < 0.01f)
@@ -327,10 +336,6 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
-
 	//get the angle that each triangle will occupy
 	float angle = 0;
 	float increment = 360 / a_nSubdivisions;
@@ -363,7 +368,6 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		//connect them
 		AddQuad(botLeft2, botRight2, botLeft1, botRight1);
 
-//		angle += increment;
 	}
 
 	// Adding information about color
@@ -392,9 +396,47 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+		//get the angle that each triangle will occupy
+	float angle = 0;
+	float increment = 360 / a_nSubdivisions;
+	vector3 heightPoint(0.0f, a_fHeight / 2, 0.0f);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//right points
+		vector3 topOutRight = GetPoint(angle, a_fOuterRadius, a_fHeight / 2); //top outer circle
+		vector3 topInRight = GetPoint(angle, a_fInnerRadius, a_fHeight / 2); //top inner circle
+
+		vector3 botOutRight = GetPoint(angle, a_fOuterRadius, -a_fHeight / 2); //bottom outer circle
+		vector3 botInRight = GetPoint(angle, a_fInnerRadius, -a_fHeight / 2); //bottom inner circle
+
+		angle += increment;
+
+		//ensure the circle is closed on the last subdivison
+		if (i == a_nSubdivisions - 1)
+		{
+			angle = 360;
+		}
+
+		//left points
+		vector3 topOutLeft = GetPoint(angle, a_fOuterRadius, a_fHeight / 2); //top outer circle
+		vector3 topInLeft = GetPoint(angle, a_fInnerRadius, a_fHeight / 2); //top inner circle
+
+		vector3 botOutLeft = GetPoint(angle, a_fOuterRadius, -a_fHeight / 2); //bottom outer circle
+		vector3 botInLeft = GetPoint(angle, a_fInnerRadius, -a_fHeight / 2); //bottom inner circle
+
+		//draw top circle
+		AddQuad(topOutLeft, topOutRight, topInLeft, topInRight);
+
+		//draw bottom circle
+		AddQuad(botOutRight,botOutLeft, botInRight, botInLeft);
+
+		//draw outer rects
+		AddQuad(botOutLeft, botOutRight, topOutLeft, topOutRight);
+
+		//draw inner rects
+		AddQuad(botInRight, botInLeft, topInRight, topInLeft);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -438,20 +480,53 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		a_fRadius = 0.01f;
 
 	//Sets minimum and maximum of subdivisions
-	if (a_nSubdivisions < 1)
+	if (a_nSubdivisions < 2)
 	{
 		GenerateCube(a_fRadius * 2.0f, a_v3Color);
 		return;
 	}
-	if (a_nSubdivisions > 6)
-		a_nSubdivisions = 6;
+	if (a_nSubdivisions > 15)
+		a_nSubdivisions = 15;
 
 	Release();
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+//	GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+
+
+	float angle = 0; //initial longitude angle
+	float rotStep = 360 / a_nSubdivisions; //degrees to rotate after each point
+	
+	float iterations = a_nSubdivisions *2;
+
+	float latRotStep = 360 / iterations;
+
+	for (int i = 0; i < iterations; i++)
+	{		
+		float subAngle = 0; //angle for traveling along laitude 
+		float longitude = angle; //current longitude value
+		float nLongitude = angle + latRotStep; //next longitude value
+	
+			for (int c = 0; c < a_nSubdivisions; c++)
+			{
+				float latitude = subAngle; //current latitude value
+				subAngle += latRotStep;
+				
+				float nLatitude = subAngle; //next latitude value
+				AddQuad(GetPoint3D(longitude, latitude, a_fRadius), GetPoint3D(longitude, nLatitude, a_fRadius), GetPoint3D(nLongitude, latitude, a_fRadius), GetPoint3D(nLongitude, nLatitude, a_fRadius));
+			
+				
+
+			}
+		
+		angle += latRotStep;
+
+	}
+	//ensure the circle is closed on the last subdivison
+	
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
