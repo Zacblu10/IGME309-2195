@@ -20,6 +20,9 @@ class Application
 	MyMesh* m_pMesh = nullptr;
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
 
+	vector3 m_Pos = vector3(0.0f,0.0f,35.0f); 
+	vector3 m_Target;
+	
 private:
 	static ImGuiObject gui; //GUI object
 
