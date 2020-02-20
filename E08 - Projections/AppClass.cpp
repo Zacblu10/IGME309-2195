@@ -45,6 +45,11 @@ void Application::Display(void)
 	//draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
 
+
+	vector3 v3Position;
+	vector3 v3Target;
+	vector3 v3Up;
+
 	//calculate view and projection
 	switch (m_uProjection)
 	{
@@ -63,6 +68,14 @@ void Application::Display(void)
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+
+		v3Position = vector3(0, 0, -14);
+		v3Target = vector3(0, 0, 0); 
+		v3Up = vector3(0, 1, 0); 
+
+		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
+
+		m_pCamera->SetNearFar(vector2(5, 1000));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
