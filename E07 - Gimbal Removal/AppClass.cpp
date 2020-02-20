@@ -24,34 +24,28 @@ void Application::Display(void)
 
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
 
-	//glm::lookAt(where camera is, what its looking at, the up of the camera)
-	m4View = glm::lookAt(vector3(0.0f, 0.0f, 20.0f), vector3(0.0f,0.0f,0.0f), vector3(0.0f,1.0f,0.0f)));
-
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 
-	m_m4Model = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.x), vector3(1.0f, 0.0f, 0.0f));
+	/*m_m4Model = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.x), vector3(1.0f, 0.0f, 0.0f));
 	m_m4Model = glm::rotate(m_m4Model, glm::radians(m_v3Rotation.y), vector3(0.0f, 1.0f, 0.0f));
 	m_m4Model = glm::rotate(m_m4Model, glm::radians(m_v3Rotation.z), vector3(0.0f, 0.0f, 1.0f));
+	*/
 
-	static float fAngle = 0.0f;
+	//m_pMesh->Render(m4Projection, m4View, m_m4Model);
 
-	m_m4Model = ToMatrix4(glm::angleAxis(glm::radians(fAngle), AXIS_Z));
-
-	quaternion q1 = glm::angleAxis(glm::radians(0.0f), AXIS_Z);
-	quaternion q2 = glm::angleAxis(glm::radians(180.0f), AXIS_Z);
-
-	static float fPercent = 0.0f; 
-
-	m_m4Model = ToMatrix4(glm::mix(q1, q2, fPercent));
-
-	m_pMesh->Render(m4Projection, m4View, m_m4Model);
-
-	fAngle += 1; 
-	fPercent += 0.01;
-
-	//m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(1.0f), vector3(1.0f));
-	//m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qOrientation));
+	 
 	
+
+	quaternion xAngle = glm::angleAxis(glm::radians(m_v3Rotation.x), vector3(1.0f, 0.0f, 0.0f));
+	quaternion yAngle = glm::angleAxis(glm::radians(m_v3Rotation.y), vector3(0.0f, 1.0f, 0.0f));
+	quaternion zAngle = glm::angleAxis(glm::radians(m_v3Rotation.z), vector3(0.0f, 0.0f, 1.0f));
+
+	m_qOrientation = m_qOrientation * xAngle * yAngle * zAngle;
+
+	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qOrientation));
+	
+
+
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
 
