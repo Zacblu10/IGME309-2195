@@ -46,9 +46,9 @@ void Application::Display(void)
 	m_pMeshMngr->AddSkyboxToRenderList();
 
 
-	vector3 v3Position;
+	vector3 v3Position = vector3(0.0f, 0.0f, 10.0f);
 	vector3 v3Target;
-	vector3 v3Up;
+	vector3 v3Up = vector3(0, 1, 0);
 
 	//calculate view and projection
 	switch (m_uProjection)
@@ -59,12 +59,25 @@ void Application::Display(void)
 		break;
 	case 2:
 		m_pCamera->ResetCamera();
+
+		m_pCamera->SetPerspective(false);
 		break;
 	case 3:
-		m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();		
+
+
+		v3Position = vector3(20, 0, 0);
+		v3Up = -AXIS_Z;
+		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
+
+
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+
+		v3Position = vector3(0, 0, -14);
+		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
+
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
@@ -79,9 +92,20 @@ void Application::Display(void)
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+
+		v3Position = vector3(0, 0, -14);
+		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
+
+		m_pCamera->SetNearFar(vector2(1, 10));
+
+
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+
+		v3Up = -AXIS_Y;
+		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
+
 		break;
 	}
 
