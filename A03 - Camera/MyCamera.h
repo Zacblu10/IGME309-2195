@@ -28,6 +28,12 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+
+	vector3 forward; 
+	vector3 right;
+	vector3 up;
+
+
 public:
 	/*
 	USAGE: Constructor
@@ -230,6 +236,20 @@ public:
 	OUTPUT: ---
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
+	/*
+USAGE: Translates the camera right or left
+ARGUMENTS: float a_fDistance = 0.1f -> amount of movement
+OUTPUT: ---
+*/
+	void RotateSideways(float a_fAngle = 0.1f);
+	/*
+USAGE: Translates the camera right or left
+ARGUMENTS: float a_fDistance = 0.1f -> amount of movement
+OUTPUT: ---
+*/
+	void RotateVertical(float a_fAngle = 0.1f);
+
+
 };
 
 } //namespace Simplex

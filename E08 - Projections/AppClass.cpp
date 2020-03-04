@@ -66,8 +66,8 @@ void Application::Display(void)
 		m_pCamera->ResetCamera();		
 
 
-		v3Position = vector3(20, 0, 0);
-		v3Up = -AXIS_Z;
+		v3Position = vector3(0, 0, 20);
+		//v3Up = -AXIS_Z;
 		m_pCamera->SetPositionTargetAndUpward(v3Position, v3Target, v3Up);
 
 

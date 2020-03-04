@@ -46,6 +46,9 @@ Simplex::MyCamera::MyCamera(MyCamera const& other)
 
 	m_m4View = other.m_m4View;
 	m_m4Projection = other.m_m4Projection;
+
+
+
 }
 
 MyCamera& Simplex::MyCamera::operator=(MyCamera const& other)
@@ -124,6 +127,12 @@ void Simplex::MyCamera::SetPositionTargetAndUpward(vector3 a_v3Position, vector3
 	m_v3Target = a_v3Target;
 
 	m_v3Above = a_v3Position + glm::normalize(a_v3Upward);
+
+	//local axis
+	forward = glm::normalize(m_v3Target - m_v3Position);
+	up = glm::normalize(m_v3Above - m_v3Position);
+	right = glm::normalize(glm::cross(forward, up));
+
 	
 	//Calculate the Matrix
 	CalculateProjectionMatrix();
@@ -152,11 +161,81 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 
 void MyCamera::MoveForward(float a_fDistance)
 {
-	//The following is just an example and does not take in account the forward vector (AKA view vector)
-	m_v3Position += vector3(0.0f, 0.0f,-a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
+	//move the camera variables based on the forward vector
+	m_v3Position += forward * a_fDistance;
+	m_v3Target += forward * a_fDistance;
+	m_v3Above += forward * a_fDistance;
+
+	//recalculate local axis
+	forward = glm::normalize(m_v3Target - m_v3Position);
+	up = glm::normalize(m_v3Above - m_v3Position);
+	right = glm::normalize(glm::cross(forward, up));
+
 }
 
-void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
-void MyCamera::MoveSideways(float a_fDistance){}//Needs to be defined
+void MyCamera::MoveVertical(float a_fDistance)
+{
+	//move the camera variables based on the up vector
+	m_v3Position += up * a_fDistance;
+	m_v3Target += up * a_fDistance;
+	m_v3Above += up * a_fDistance;
+
+	//recalculate local axis
+	forward = glm::normalize(m_v3Target - m_v3Position);
+	up = glm::normalize(m_v3Above - m_v3Position);
+	right = glm::normalize(glm::cross(forward, up));
+}
+void MyCamera::MoveSideways(float a_fDistance)
+{
+	//move the camera variables based on the right vector
+	m_v3Position += right * a_fDistance;
+	m_v3Target += right * a_fDistance;
+	m_v3Above += right * a_fDistance;
+
+	//recalculate local axis
+	forward = glm::normalize(m_v3Target - m_v3Position);
+	up = glm::normalize(m_v3Above - m_v3Position);
+	right = glm::normalize(glm::cross(forward, up));
+}
+
+void MyCamera::RotateSideways(float a_fAngle)
+{
+	//create a float to track the total angle
+	static float totalChangeX = 0;
+	//add the new angle to the previous angle
+	totalChangeX -= a_fAngle;
+
+	//calculate mouse position changes
+	float mouseX = cosf(totalChangeX);
+	float mouseZ = sinf(totalChangeX);
+
+	//set the camera target
+	SetTarget(vector3(mouseX + m_v3Position.x, m_v3Target.y, mouseZ + m_v3Position.z));
+
+}
+
+void MyCamera::RotateVertical(float a_fAngle)
+{
+	quaternion xAngle;
+
+	//if the z position is 0, make sure the controls don't flip
+	if (m_v3Position.z > 0)
+	{
+		xAngle = glm::angleAxis(glm::radians(-a_fAngle), AXIS_X);
+	}
+	else
+	{
+		xAngle = glm::angleAxis(glm::radians(a_fAngle), AXIS_X);
+
+	}
+	
+	//add the quaternion to the target 
+	m_v3Target = m_v3Target * xAngle;
+
+	//update the local axis.
+	forward = glm::normalize(m_v3Target - m_v3Position);
+	up = glm::normalize(m_v3Above - m_v3Position);
+	right = glm::normalize(glm::cross(forward, up));
+
+}
+
