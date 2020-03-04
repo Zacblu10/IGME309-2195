@@ -14,8 +14,8 @@ void Application::InitVariables(void)
 
 	//creeper
 	m_pCreeper = new Model();
-	m_pCreeper->Load("Sorted\\SphereCube.fbx");
-	//m_pCreeper->Load("Minecraft\\Creeper.obj");
+	//m_pCreeper->Load("Sorted\\SphereCube.fbx");
+	m_pCreeper->Load("Minecraft\\Creeper.obj");
 	//m_pCreeper->Load("Lego\\Unikitty.bto");
 	//m_pCreeper->ChangeMeshOptions(MeshOptions(IDENTITY_M4, RENDER_SOLID | RENDER_WIRE), nullptr, -1);
 	m_pCreeperRB = new MyRigidBody(m_pCreeper->GetVertexList());
@@ -56,6 +56,9 @@ void Application::Update(void)
 
 	//m_pSteve->AddToRenderList();
 	//m_pSteveRB->AddToRenderList();
+
+	//m_pMeshMngr->AddSphereToRenderList(IDENTITY_M4, C_RED, RENDER_WIRE | RENDER_SOLID); 
+	//m_pMeshMngr->AddWireSphereToRenderList(glm::scale(vector3(5, 1, 1)), C_RED);
 }
 void Application::Display(void)
 {
