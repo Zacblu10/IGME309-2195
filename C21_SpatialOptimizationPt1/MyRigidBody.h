@@ -38,7 +38,7 @@ class MyRigidBody
 
 	matrix4 m_m4ToWorld = IDENTITY_M4; //Matrix that will take us from local to world coordinate
 
-	uint m_nCollidingSetSize = 0; //size of the colliding set
+	uint m_nCollidingSetSize = 0; //size of the colliding set ///used so you don't have to check size on the set each timeyou want to use it
 	std::set<MyRigidBody*> m_CollidingRBSet; //set of rigid bodies this one is colliding with
 
 public:
