@@ -228,7 +228,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 {
 	//check if spheres are colliding as pre-test
 	bool bColliding = (glm::distance(GetCenterGlobal(), a_pOther->GetCenterGlobal()) < m_fRadius + a_pOther->m_fRadius);
-	
+
 	//if they are colliding check the SAT
 	if (bColliding)
 	{
@@ -251,7 +251,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 }
 void MyRigidBody::AddToRenderList(void)
 {
-	if (true)
+	if (m_bVisibleARBB)
 	{
 		if (m_CollidingRBSet.size() > 0)
 			m_pMeshMngr->AddWireSphereToRenderList(glm::translate(m_m4ToWorld, m_v3Center) * glm::scale(vector3(m_fRadius)), C_BLUE_CORNFLOWER);
@@ -278,19 +278,19 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 {
 	//c = center point = m_v3Center
 	//u = local axis = m_m4ToWorld
-	//e = halfwith = m_v3HalfWidth
+	//e = halfwidth = m_v3HalfWidth
 
 	float ra = 0; 
 	float rb = 0;
 	matrix4 R = IDENTITY_M4; 
 	matrix4 AbsR = IDENTITY_M4;
 	// Compute rotation matrix expressing b in a's coordinate frame
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++)
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
 			R[i][j] = glm::dot(m_m4ToWorld[i], a_pOther->m_m4ToWorld[j]);
 
 	// Compute translation vector t
-	vector4 t = vector4(a_pOther->m_v3Center,0) - vector4(m_v3Center,0);
+	vector4 t = vector4(a_pOther->GetCenterGlobal(),0) - vector4(GetCenterGlobal(),0);
 	// Bring translation into a's coordinate frame
 	t = vector4(glm::dot(t, m_m4ToWorld[0]), glm::dot(t, m_m4ToWorld[1]), glm::dot(t, m_m4ToWorld[2]),0);
 
@@ -311,7 +311,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	// Test axes L = B0, L = B1, L = B2
 	for (int i = 0; i < 3; i++) {
-		ra = a_pOther->m_v3HalfWidth[0] * AbsR[0][i] + a_pOther->m_v3HalfWidth[1] * AbsR[1][i] + a_pOther->m_v3HalfWidth[2] * AbsR[2][i];
+		ra = m_v3HalfWidth[0] * AbsR[0][i] + m_v3HalfWidth[1] * AbsR[1][i] + m_v3HalfWidth[2] * AbsR[2][i];
 		rb = a_pOther->m_v3HalfWidth[i];
 		if (glm::abs(t[0] * R[0][i] + t[1] * R[1][i] + t[2] * R[2][i]) > ra + rb) {
 			return 1;
@@ -341,7 +341,6 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// Test axis L = A1 x B0
 	ra = m_v3HalfWidth[0] * AbsR[2][0] + m_v3HalfWidth[2] * AbsR[0][0];
 	rb = a_pOther->m_v3HalfWidth[1] * AbsR[1][2] + a_pOther->m_v3HalfWidth[2] * AbsR[1][1];
-
 	if (glm::abs(t[0] * R[2][0] - t[2] * R[0][0]) > ra + rb) 
 	{ return 1; }
 
@@ -378,7 +377,6 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	{
 		return 1;
 	}
-
 
 	return eSATResults::SAT_NONE;
 }
