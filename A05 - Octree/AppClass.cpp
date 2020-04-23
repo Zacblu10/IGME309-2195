@@ -17,6 +17,7 @@ void Application::InitVariables(void)
 #endif
 	int nSquare = static_cast<int>(std::sqrt(uInstances));
 	m_uObjects = nSquare * nSquare;
+	sphereRad = 34.0f;
 	uint uIndex = -1;
 	for (int i = 0; i < nSquare; i++)
 	{
@@ -24,12 +25,13 @@ void Application::InitVariables(void)
 		{
 			uIndex++;
 			m_pEntityMngr->AddEntity("Minecraft\\Cube.obj");
-			vector3 v3Position = vector3(glm::sphericalRand(34.0f));
+			vector3 v3Position = vector3(glm::sphericalRand(sphereRad));
 			matrix4 m4Position = glm::translate(v3Position);
 			m_pEntityMngr->SetModelMatrix(m4Position);
 		}
 	}
 	m_uOctantLevels = 1;
+	octree = new MyOctant(m_uOctantLevels, vector3(0, 0, 0), sphereRad);
 	m_pEntityMngr->Update();
 }
 void Application::Update(void)
@@ -59,6 +61,12 @@ void Application::Display(void)
 	
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
+
+	//draw the octree
+	if (displayTree)
+	{
+		octree->Display();
+	}
 	
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();

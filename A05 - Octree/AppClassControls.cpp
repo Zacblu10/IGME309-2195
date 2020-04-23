@@ -80,6 +80,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		break;
 	}
 	
+	
 	//gui
 	gui.io.KeysDown[a_event.key.code] = true;
 	gui.io.KeyCtrl = a_event.key.control;
@@ -111,41 +112,40 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 		bFPSControl = !bFPSControl;
 		m_pCameraMngr->SetFPS(bFPSControl);
 		break;
-	case sf::Keyboard::PageUp:
-		++m_uOctantID;
-		/*
-		if (m_uOctantID >= m_pRoot->GetOctantCount())
-			m_uOctantID = - 1;
-		*/
-		break;
-	case sf::Keyboard::PageDown:
-		--m_uOctantID;
-		/*
-		if (m_uOctantID >= m_pRoot->GetOctantCount())
-			m_uOctantID = - 1;
-		*/
-		break;
+	//case sf::Keyboard::PageUp:
+	//	++m_uOctantID;
+	//	/*
+	//	if (m_uOctantID >= m_pRoot->GetOctantCount())
+	//		m_uOctantID = - 1;
+	//	*/
+	//	break;
+	//case sf::Keyboard::PageDown:
+	//	--m_uOctantID;
+	//	/*
+	//	if (m_uOctantID >= m_pRoot->GetOctantCount())
+	//		m_uOctantID = - 1;
+	//	*/
+	//	break;
 	case sf::Keyboard::Add:
-		if (m_uOctantLevels < 4)
+		if (m_uOctantLevels < 5)
 		{
 			m_pEntityMngr->ClearDimensionSetAll();
 			++m_uOctantLevels;
-			/*
-			SafeDelete(m_pRoot);
-			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+			delete octree;
+			octree = new MyOctant(m_uOctantLevels, vector3(0.0f), sphereRad);
 		}
 		break;
 	case sf::Keyboard::Subtract:
-		if (m_uOctantLevels > 0)
+		if (m_uOctantLevels > 1)
 		{
 			m_pEntityMngr->ClearDimensionSetAll();
 			--m_uOctantLevels;
-			/*
-			SafeDelete(m_pRoot);
-			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+			delete octree;
+			octree = new MyOctant(m_uOctantLevels, vector3(0.0f), sphereRad);
 		}
+		break;
+	case sf::Keyboard::SemiColon:
+		displayTree = !displayTree; 
 		break;
 	case sf::Keyboard::LShift:
 	case sf::Keyboard::RShift:
