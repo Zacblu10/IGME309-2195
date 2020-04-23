@@ -8,7 +8,7 @@ namespace Simplex
 {
 class MyOctant
 {
-	//static uint currentDimension; 
+	static int currentDimension;
 	int dimension = 0; //what dimension this octant represents
 
 	//position variables
@@ -45,8 +45,15 @@ public:
 	void Display();
 
 
+	/*USAGE:Fills the tree with the objects in the scene for collision detection
+	ARGUMENTS:
+	OUTPUT:*/
+	void fillTree();
+
 };
+
 }
+
 #endif //__MYOCTANT_H_
 
 

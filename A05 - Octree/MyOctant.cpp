@@ -1,5 +1,7 @@
 #include "MyOctant.h"
 
+int Simplex::MyOctant::currentDimension = 1;
+
 Simplex::MyOctant::MyOctant(int _levels, vector3 _center, float _size)
 {
 	//set the identifier for the Octant
@@ -21,10 +23,14 @@ Simplex::MyOctant::MyOctant(int _levels, vector3 _center, float _size)
 
 	if (_levels == 1)//base case no more subdivisions
 	{
+		dimension = currentDimension; 
+		currentDimension++; 
+		//set the dimension
 		for (int i = 0; i < 8; i++)
 		{
 			children[i] = nullptr; 
 		}
+		fillTree();
 		return;
 	}
 	//recursively create children
@@ -64,6 +70,36 @@ void Simplex::MyOctant::Display()
 			children[i]->Display();
 		}
 	}
+}
+
+void Simplex::MyOctant::fillTree()
+{
+	//loop through all the entities 
+	for (int i = 0; i < entityManager->GetEntityCount(); i++)
+	{
+		////get the unique ID of the entity
+		//String uniqueID = entityManager->GetUniqueID(i); 
+		MyEntity* entity = entityManager->GetEntity(i);
+		//get the rigidbody of the entity
+		MyRigidBody* entityRB = entity->GetRigidBody();
+
+		 //check if the center is within the cube
+		 if (entityRB->GetCenterGlobal().x > center.x + size || entityRB->GetCenterGlobal().x < center.x - size)//left and right
+		 {
+			 continue; 
+		 }
+		 if(entityRB->GetCenterGlobal().y > center.y + size || entityRB->GetCenterGlobal().y < center.y - size)//up and down
+		 {
+			 continue; 
+		 }
+		 if (entityRB->GetCenterGlobal().z > center.z + size || entityRB->GetCenterGlobal().z < center.z - size)//forward and back
+		 {
+			 continue; 
+		 }
+		 //add the dimension to the entity 
+		 entity->AddDimension(dimension);
+	}
+
 }
 
 
