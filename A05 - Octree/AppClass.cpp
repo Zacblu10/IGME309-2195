@@ -48,6 +48,9 @@ void Application::Update(void)
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 
+	//check collisions 
+	octree->CheckCollisions(); 
+
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);
 }
@@ -82,6 +85,8 @@ void Application::Display(void)
 }
 void Application::Release(void)
 {
+	//release the octree 
+	delete octree;
 	//release GUI
 	ShutdownGUI();
 }

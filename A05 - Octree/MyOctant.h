@@ -4,6 +4,8 @@
 
 #include "MyEntityManager.h"
 
+#include "Simplex/Physics/Octant.h"
+
 namespace Simplex
 {
 class MyOctant
@@ -25,6 +27,10 @@ class MyOctant
 	MyEntityManager* entityManager = nullptr; //entity manager singleton
 	MeshManager* meshManager = nullptr; //mesh manager singleton
 
+	//objects in the octree
+	std::vector<uint> entityList;
+	uint entityCount; 
+
 public: 
 	/*USAGE: Constructs entire tree
 	ARGUMENTS:
@@ -33,6 +39,16 @@ public:
 		float _size -> halfwidth of the square
 	OUTPUT: Class Object*/
 	MyOctant(int _levels, vector3 _center, float _size); 
+
+	/*USAGE: Copy Constructor
+	ARGUMENTS: class object to copy
+	OUTPUT: class object instance*/
+	MyOctant(MyOctant const& other);
+	
+	/*USAGE: Copy Assignment Operator
+	ARGUMENTS: class object to copy
+	OUTPUT: ---*/
+	MyOctant& operator=(MyOctant const& other);
 
 	/*USAGE: Destructor 
 	ARGUMENTS: ---
@@ -50,6 +66,10 @@ public:
 	OUTPUT:*/
 	void fillTree();
 
+	/*USAGE:
+	ARGUMENTS:
+	OUTPUT:*/
+	void CheckCollisions();
 };
 
 }

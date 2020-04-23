@@ -174,13 +174,14 @@ void Simplex::MyEntityManager::Update(void)
 	}
 
 	//check collisions
-	for (uint i = 0; i < m_uEntityCount - 1; i++)
-	{
-		for (uint j = i + 1; j < m_uEntityCount; j++)
-		{
-			m_mEntityArray[i]->IsColliding(m_mEntityArray[j]);
-		}
-	}
+	//for (uint i = 0; i < m_uEntityCount - 1; i++)
+	//{
+	//	for (uint j = i + 1; j < m_uEntityCount; j++)
+	//	{
+	//		m_mEntityArray[i]->IsColliding(m_mEntityArray[j]);
+	//	}
+	//}
+
 }
 void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 {
