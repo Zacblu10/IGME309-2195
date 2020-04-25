@@ -4,8 +4,6 @@
 
 #include "MyEntityManager.h"
 
-#include "Simplex/Physics/Octant.h"
-
 namespace Simplex
 {
 class MyOctant
@@ -66,7 +64,7 @@ public:
 	OUTPUT:*/
 	void fillTree();
 
-	/*USAGE:
+	/*USAGE: Checks collisions for all objects in the octant
 	ARGUMENTS:
 	OUTPUT:*/
 	void CheckCollisions();
